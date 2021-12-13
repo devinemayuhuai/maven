@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.myh.dao.UserMapper">
+    <!--    登录-->
+    <select id="login" resultType="com.myh.pojo.User">
+        select *from book_user where username=#{username} and password=#{password}
+    </select>
+
+    <select id="queryUser" resultType="com.myh.pojo.User">
+        select * from book_user
+    </select>
+
+    <select id="queryUserById" resultType="com.myh.pojo.User">
+        select *from book_user where id=#{id}
+    </select>
+
+    <delete id="deleteUser" >
+        delete from book_user where id=#{id}
+    </delete>
+    <update id="updateUser">
+        update book_user
+         <set>
+           <if test="username!=null">
+               username=#{username},
+           </if>
+           <if test="password!=null">
+               password=#{password},
+           </if>
+           <if test="email!=null">
+                email=#{email},
+           </if>
+           <if test="birth!=null">
+                 birth=#{birth},
+           </if>
+           <if test="gender!=null">
+                 gender=#{gender}
+           </if>
+       </set>
+        where id=#{id}
+    </update>
+
+
+<!--    查询-->
+    <select id="existUsername" resultType="com.myh.pojo.User">
+        select *from book_user where username=#{username}
+    </select>
+<!--    注册|同时作为后台添加新用户-->
+    <insert id="register" >
+        insert into book_user(`username`,`password`,`email`,`birth`,`gender`,`headimg`)VALUE(#{username},#{password},#{email},#{birth},#{gender},#{headimg});
+    </insert>
+
+    <delete id="batchDelete" parameterType="java.util.List">
+        delete from book_user where 1>2 or id in
+        <foreach collection="list" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <select id="queryUsers" resultType="com.myh.pojo.User">
+        select *from book_user
+        <trim prefix="where" suffixOverrides="and">
+            <if test="id!=null">
+                id=#{id} and
+            </if>
+            <if test="username!=null">
+                username =#{username} and
+            </if>
+            <if test="gender!=null">
+                gender=#{gender} and
+            </if>
+            <if test="email!=null">
+                email=#{email} and
+            </if>
+        </trim>
+    </select>
+
+    <select id="queryUserCount" resultType="int">
+        select count(*) from book_user;
+    </select>
+</mapper>

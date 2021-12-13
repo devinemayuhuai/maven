@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>layui</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="../../lib/layui-v2.6.3/css/layui.css" media="all">
+    <link rel="stylesheet" href="../../css/public.css" media="all">
+    <style>
+        body {
+            background-color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+<div class="layui-form layuimini-form">
+    <div class="layui-form-item">
+        <label class="layui-form-label required">书名</label>
+        <div class="layui-input-block">
+            <input type="text" name="name" lay-verify="required" lay-reqtext="书名不能为空" placeholder="请输入图书名" value="" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label required">价格</label>
+        <div class="layui-input-block">
+            <input type="text" name="price" lay-verify="required" lay-reqtext="价格不能为空" placeholder="请输入图书价格" value="" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label required">作者</label>
+        <div class="layui-input-block">
+            <input type="text" name="author" lay-verify="required" lay-reqtext="图书作者不能为空" placeholder="请输入作者" value="" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label required">库存</label>
+        <div class="layui-input-block">
+            <input type="text" name="stock" lay-verify="required" lay-reqtext="库存不能为空" placeholder="请输入图书库存" value="" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label required">类型</label>
+        <div class="layui-input-block">
+            <input type="text" name="type" lay-verify="required" lay-reqtext="图书类型不能为空" placeholder="请输入图书类型" value="" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label required">出版社</label>
+        <div class="layui-input-block">
+            <input type="text" name="press" lay-verify="required" lay-reqtext="出版社不能为空" placeholder="请输入图书出版社" value="" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label required">是否加入推荐</label>
+        <div class="layui-input-block">
+            <input type="radio" name="recommend" value="1" title="推荐" checked="">
+            <input type="radio" name="recommend" value="0" title="不推荐">
+        </div>
+    </div>
+    <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label">备注信息</label>
+        <div class="layui-input-block">
+            <textarea  class="layui-textarea" placeholder="请输入备注信息"></textarea>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn layui-btn-normal" lay-submit lay-filter="saveBtn">确认保存</button>
+        </div>
+    </div>
+</div>
+<script src="../../lib/layui-v2.6.3/layui.js" charset="utf-8"></script>
+<script>
+    layui.use(['form','laydate'], function () {
+        var form = layui.form,
+            layer = layui.layer,
+            laydate=layui.laydate,
+            $ = layui.$;
+
+        //监听提交
+        form.on('submit(saveBtn)', function (data) {
+            var index = layer.alert(JSON.stringify(data.field),
+                {
+                    title: '请确认你要添加的用户信息'
+                }, function () {
+                    var bookstr=JSON.stringify(data.field);
+                    $.ajax({
+                        type:'post',
+                        url:"/ssm_book_war_exploded/addBook",
+                        data:bookstr,
+                        contentType:'application/json',
+                        success:function (suc){
+                            if (suc==1){
+                                layer.close(index);
+                                var iframeIndex = parent.layer.getFrameIndex(window.name);
+                                parent.layer.close(iframeIndex);
+                                layer.msg('添加成功', {
+                                    icon: 1,
+                                    time: 4000,
+                                    anim: 1,
+                                });
+                                table.reload('currentTableId',{
+                                    url:'/ssm_book_war_exploded/queryBooks',
+                                    where:{},
+                                });
+                            }else {
+                                layer.msg('添加失败', {
+                                    icon: 2,
+                                    time: 3000,
+                                    anim: 1,
+                                });
+                            }
+                        },
+
+                    });
+                    // 关闭弹出层
+
+                });
+
+
+
+
+
+
+            return false;
+        });
+
+        laydate.render({
+            elem:'#birth',
+            type:'date',//type属性可以提供多种选择器，year,month,date,time,datetime
+            format:'yyyy-MM-dd',//自定义时间格式
+            theme:'molv',//自定义主题，theme的可选值有：default（默认简约）、molv（墨绿背景）、#颜色值（自定义颜色背景）、grid（格子主题）
+            calendar:true,//是否显示公历节日，国际版en不显示
+        });
+
+
+    });
+</script>
+</body>
+</html>

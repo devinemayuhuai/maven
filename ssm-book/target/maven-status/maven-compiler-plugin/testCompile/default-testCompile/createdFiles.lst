@@ -1,0 +1,5 @@
+ServiceTest\UserServiceTest.class
+daoTest\BookDaoTest.class
+ServiceTest\BookServiceTest.class
+daoTest\UserDaoTest.class
+daoTest\managerDaoTest.class

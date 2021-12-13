@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.myh.dao.BookMapper">
+<!--    查询新书-->
+    <select id="queryNewBook" resultType="com.myh.pojo.Book">
+        select *from t_book where state=2
+    </select>
+<!--     查询热销书-->
+    <select id="queryHotBook" resultType="com.myh.pojo.Book">
+        select *from t_book where state=1
+    </select>
+<!--     查询折扣书-->
+    <select id="queryDiscountBook" resultType="com.myh.pojo.Book">
+        select *from t_book where state=0
+    </select>
+
+    <select id="queryBookByName" resultType="com.myh.pojo.Book">
+        select *from t_book where name=#{bookname}
+    </select>
+
+    <select id="queryBookByPrice" resultType="com.myh.pojo.Book">
+        select *from t_book where name=#{bookname} and price between #{min} and #{max}
+    </select>
+
+    <select id="queryBookById" resultType="com.myh.pojo.Book">
+        select *from t_book where id=#{id}
+    </select>
+
+    <select id="queryBookByType" resultType="com.myh.pojo.Book">
+        select *from t_book where type=#{type} and recommend=1;
+    </select>
+    <select id="queryBookByTypePlus" resultType="com.myh.pojo.Book">
+        select *from t_book where type=#{type}
+    </select>
+    <select id="queryBookByPriceForType" resultType="com.myh.pojo.Book">
+        select *from t_book where type=#{type} and price between #{min} and #{max}
+    </select>
+    <select id="queryBookCount" resultType="int">
+        select count(*) from t_book
+    </select>
+    <select id="queryBooks" resultType="com.myh.pojo.Book">
+        select *from t_book
+    </select>
+
+    <insert id="addBook" >
+        insert into t_book
+            (`name`,`price`,`author`,`stock`,`type`,`state`,`press`,`recommend`)VALUE
+            (#{name},#{price},#{author},#{stock},#{type},#{state},#{press},#{recommend});
+    </insert>
+    <delete id="batchDeleteBook" parameterType="java.util.List">
+        delete from t_book where 1>2 or id in
+        <foreach collection="list" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <delete id="deleteBookById" >
+        delete from t_book where id=#{id}
+    </delete>
+
+    <update id="updateBook">
+        update t_book
+        <set>
+            <if test="name!=null">
+               name=#{name},
+            </if>
+            <if test="price!=null">
+              price=#{price},
+            </if>
+            <if test="author!=null">
+                author=#{author},
+            </if>
+            <if test="stock!=null">
+                stock=#{stock},
+            </if>
+            <if test="type!=null">
+                `type`=#{type},
+            </if>
+            <if test="press!=null">
+                press=#{press},
+            </if>
+            <if test="recommend!=null">
+                recommend=#{recommend}
+            </if>
+        </set>
+        where id=#{id}
+    </update>
+
+    <select id="queryBooksByTerm" resultType="com.myh.pojo.Book">
+        select *from t_book
+        <trim prefix="where" suffixOverrides="and">
+            <if test="name!=null">
+                name=#{name} and
+            </if>
+            <if test="author!=null">
+                author =#{author} and
+            </if>
+            <if test="press!=null">
+                press=#{press} and
+            </if>
+            <if test="type!=null">
+                `type`=#{type} and
+            </if>
+        </trim>
+    </select>
+
+</mapper>
